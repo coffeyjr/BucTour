@@ -42,23 +42,8 @@ function onLocationFound(e) {
         popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
     })
 
-    function onLocationFound(e) {
-        var radius = e.accuracy / 2;
-        var popupContent = "You are within " + radius + " meters from this point";
-      
-        if (gpsMarker == null) {
-          gpsMarker = L.marker(e.latlng, {icon: IsyUserIcon}).addTo(map);
-          gpsMarker.bindPopup(popupContent).openPopup();
-          gpsCircleMarker = L.circle(e.latlng, radius).addTo(map);
-          }
-        else {
-         gpsMarker.getPopup().setContent(popupContent);   
-         gpsMarker.setLatLng(e.latlng);
-         gpsCircleMarker.setLatLng(e.latlng);
-         gpsCircleMarker.setRadius(radius);
-        }
-      }
-    /* -- L.marker((e.latlng), {icon: user}).update().addTo(map).on('click', clickZoom); -- */
+    
+    L.marker((e.latlng), {icon: user}).update().addTo(map).on('click', clickZoom);
 
     /* --- Radius around user location ---
     L.circle(e.latlng, radius).addTo(map);
