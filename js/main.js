@@ -26,34 +26,43 @@ map.on('locationerror', onLocationError);
 map.locate({watch: true, setView: true, maxZoom: 20});
  /* UNDO THIS!!!! */
 
-/* Showing the user and setting the map accordingly */
-function onLocationFound(e) {
+    // placeholders for the L.marker and L.circle representing user's current position and accuracy    
+    var current_position, current_accuracy;
 
-    /* -- Variable for radius calculation --
-    var radius = e.accuracy;
-    */
+    function onLocationFound(e) {
+      // if position defined, then remove the existing position marker and accuracy circle from the map
+      if (current_position) {
+          map.removeLayer(current_position);
+          map.removeLayer(current_accuracy);
+      }
 
-    var user = L.icon({
-        iconUrl: 'markers/male.png',
-    
-        
-        iconSize:     [32, 37], // size of the icon
-        iconAnchor:   [17, 36], // point of the icon which will correspond to marker's location
-        popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
-    })
+      var radius = e.accuracy / 2;
 
-    
-    L.marker((e.latlng), {icon: user}).update().addTo(map).on('click', clickZoom);
+      current_position = L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
-    /* --- Radius around user location ---
-    L.circle(e.latlng, radius).addTo(map);
-    */
-}
+      current_accuracy = L.circle(e.latlng, radius).addTo(map);
+    }
 
 /* Center on Click */
 function clickZoom(e) {
     map.setView(e.target.getLatLng(),20);
 }
+
+function onLocationError(e) {
+    alert(e.message);
+  }
+
+  map.on('locationfound', onLocationFound);
+  map.on('locationerror', onLocationError);
+
+  // wrap map.locate in a function    
+  function locate() {
+    map.locate({setView: true, maxZoom: 16});
+  }
+
+  // call locate every 3 seconds... forever
+  setInterval(locate, 3000);
 
 /* ------ Routes ------ */
 
@@ -382,11 +391,11 @@ var polygon = L.polygon([
 
 /* 1. Roy S. Nicks Hall */
 var nicksIcon = L.icon({
-    iconUrl: 'markers/number_1.png',
+    iconUrl: 'markers/pirate-hat.png',
 
     
-    iconSize:     [32, 37], // size of the icon
-    iconAnchor:   [17, 36], // point of the icon which will correspond to marker's location
+    iconSize:     [52, 57], // size of the icon
+    iconAnchor:   [37, 56], // point of the icon which will correspond to marker's location
     popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
 })
 L.marker([36.30242064155211, -82.36795760906797], {icon: nicksIcon}).addTo(map).bindPopup("<b>Roy S. Nicks Hall</b>").on('click', clickZoom);
